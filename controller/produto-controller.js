@@ -14,8 +14,12 @@ const Produto = mongoose.model("produtos",ProdutoSchema)
 // -----------------Criando o Modelo-----------------//
 produtos =await Produto.find({})
 console.log(produtos)
+
+
 //Produto.find().then((arr)=>console.log(arr)) //Busca na coleção de produtos
 
+//----------------REPOSITÓRIOS------------------------------//
+Init()
 
 
 
