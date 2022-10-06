@@ -1,55 +1,48 @@
-let produtos = []
+//Carreggar o model de produtos
+const produto =  require("../model/produto")
 
-//Trazer no banco de dados
-//----------------Conectando ao banco----------------//
-const mongoose = require("mongoose")
-mongoose.connect("mongodb+srv://travelmond:FullMetal10!@clustertest.93qpga6.mongodb.net/?retryWrites=true&w=majority")
+//-------------# Funções controller ------------------
 
-// -----------------Criando um Schema(Collection)-----------------//
-const ProdutoSchema = new mongoose.Schema({descricao:String,preco:Number,imagem:String})
+async function listaProdutos(req, res){
+   
+        //Buscar no banco
+       const produtos = await produto.find({})
 
-// -----------------Criando o Modelo-----------------//
-const Produto = mongoose.model("produtos",ProdutoSchema)
+       res.json(produtos)
 
-// -----------------Criando o Modelo-----------------//
-produtos =await Produto.find({})
-console.log(produtos)
-
-
-//Produto.find().then((arr)=>console.log(arr)) //Busca na coleção de produtos
-
-//----------------REPOSITÓRIOS------------------------------//
-Init()
-
-
-
-
-
-//---------------------# Funções Controller----------------
-
-function getProduto(req, res){
-    res.json(produtos)
 }
 
-function postProduto(req,res){
-    produtos.push(req.body)
-    res.json(req.body)
+function cadastraProduto(req, res){
+   
+    //incluindo objeto no array
+     produtos.push(req.body) 
+     //devolvendo um json de resposta para o client 
+     res.json(req.body)
+    // res.json({mensagem:"cadastrado com sucesso"}) 
+ }
+
+function deleteProduto(req, res){
+
+   
+
+        let indice =  req.query.i
+        produtos.splice(indice,1)
+     
+        
+         res.status(200)
+         res.send("removido indice:"+ indice)
+     
 }
 
-function deleteProduto(req,res){
-    let indice = req.query.i
-    produtos.splice(indice,1)
-
-    res.status(200)
-    res.send("removido indice: "+indice)
+function alteraProduto(req, res){
+    
+        let indice = req.query.i
+        let produto =  req.body
+    
+        produtos[indice] = produto
+        res.send("Alterado com sucesso")
+    
 }
 
-function putProduto(req,res){
-    let indice = req.query.i
-    let produto = req.body
 
-    produtos[indice] = produto
-    res.send("Alterado com sucesso")
-}
-
-module.exports = {getProduto,postProduto,deleteProduto,putProduto}
+module.exports =  {listaProdutos , cadastraProduto , deleteProduto, alteraProduto}

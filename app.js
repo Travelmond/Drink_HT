@@ -1,76 +1,36 @@
-
-const http = require("http") //importação
-const hostname = "127.0.0.1" //endereço local (localhost)
-const port = 3000 //porta
-
-//CRIANDO SERVIÇO
-const server = http.createServer((req, res) => {
-    res.status = 200;
-    res.setHeader("Content-Type", "application/json");
-
-    switch (req.method) {
-        case "POST":
-            res.end("Cadastrado com sucesso!")
-            break;
-        case "PUT":
-            res.end("Alterado com sucesso!")
-            break;
-        case "DELETE":
-            res.end("Deletado com sucesso!")
-            break;
-        case "GET":
-            let produtos = []
-            let p1 = {
-                descricao: "Suco de Uva",
-                preco: "10.5",
-                imagem: "http://i.mlcdn.com.br/portaldalu/fotosconteudo/58836.jpg"
-            }
-            let p2 = {
-                descricao: "Suco de Banana",
-                preco: "11.5",
-                imagem: "http://i.mlcdn.com.br/portaldalu/fotosconteudo/58836.jpg",
-            }
-            let p3 = {
-                descricao: "Suco de Laranja",
-                preco: "12.5",
-                imagem: "http://i.mlcdn.com.br/portaldalu/fotosconteudo/58836.jpg",
-            }
-
-            //Carga no array com 3 produtos
-            produtos.push(p1, p2, p3)
+//carragando o express na aplicacao
+const express = require("express")
+const cors = require("cors")
+const produtoRouter = require('./router/produto-router')
 
 
-            //Resposta do servidor
-            res.end(JSON.stringify(produtos))
-            break;
-            default:
-                res.end("Não sei esta função!")
-                break;
-            
-    }
-})
-
-//ATIVAR SERVIÇO
-server.listen(port, hostname, () => {
-    console.log(`Servidor local está rodando em http://${hostname}:${port}`)
-})
+//Conexao
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://admin:CqcNDqzodGlvJWx7@cluster0.u6c60rf.mongodb.net/drinkht?retryWrites=true&w=majority');
 
 
 
 
+const app = express() // invocando a function do express
 
+const port = 3000 // definindo uma porta para o serviço
 
+//conectando a funcao cors com o express
+app.use(cors())
+//reconhecendo os request que possui json no body
+app.use(express.json())
 
+//-------------# ROTAS #-----------------
 
+// invocando a funcao get para configurar a rota http pelo método get
+app.get("/", (req, res)=>{
+    res.send("API DRINK HT V1.0.0 -!")
+}) 
+app.use("/produtos", produtoRouter)
 
+//----------------Inicializacao de servidor------------
 
-
-
-
-
-
-
-
-
-
-
+//server
+app.listen(port, ()=>{
+    console.log(`App running on port ${port}`)
+} )
